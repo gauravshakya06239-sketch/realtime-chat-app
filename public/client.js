@@ -11,7 +11,7 @@ const messageInput = document.getElementById('messageInput');
 // यूजर से उसका नाम पूछना
 let username;
 do {
-    username = prompt('चैट रूम में शामिल होने के लिए अपना नाम डालें:');
+    username = prompt('Enter your name..');
 } while(!username);
 
 // सर्वर को बताना कि नया यूजर आया है
@@ -62,12 +62,11 @@ socket.on('receive-message', (data) => {
 
 // जब कोई नया यूजर जुड़ता है
 socket.on('user-connected', (user) => {
-    appendMessage({ message: `🟢 ${user} चैट में शामिल हुए` }, 'system-msg');
+    appendMessage({ message: `🟢 ${user} Added to the chat` }, 'system-msg');
 });
 
-// जब कोई चैट छोड़ता है
 socket.on('user-disconnected', (user) => {
-    appendMessage({ message: `🔴 ${user} ने चैट छोड़ दी` }, 'system-msg');
+    appendMessage({ message: `🔴 ${user} left the chat` }, 'system-msg');
 });
 // --- ऑडियो कॉल वेरिएबल्स ---
 const callBtn = document.getElementById('callBtn');
@@ -112,7 +111,7 @@ async function setupAudio() {
 
 // 2. कॉल शुरू करना (Call Button Click)
 callBtn.addEventListener('click', async () => {
-    callStatus.innerText = "📞 कॉल कनेक्ट हो रही है...";
+    callStatus.innerText = "📞 Calling";
     callBtn.style.display = 'none';
     hangupBtn.style.display = 'inline-block';
     muteBtn.style.display = 'inline-block'; // यहाँ जोड़ें
@@ -128,12 +127,12 @@ callBtn.addEventListener('click', async () => {
 
 // 3. सामने वाले के पास कॉल ऑफर आना
 socket.on('audio-offer', async (data) => {
-    const accept = confirm(`${data.sender} आपको ऑडियो कॉल कर रहे हैं। क्या आप बात करना चाहते हैं?`);
+    const accept = confirm(`${data.sender} Rcived a call. Accept?`);
     
     if (accept) {
         callBtn.style.display = 'none';
         hangupBtn.style.display = 'inline-block';
-        callStatus.innerText = "🗣️ कॉल चालू है...";
+        callStatus.innerText = "🗣️ Call in running";
         muteBtn.style.display = 'inline-block'; // यहाँ जोड़ें 
         await setupAudio();
         await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
@@ -150,7 +149,7 @@ socket.on('audio-offer', async (data) => {
 // 4. कॉल का जवाब मिलना
 socket.on('audio-answer', async (answer) => {
     await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-    callStatus.innerText = "🗣️ कॉल चालू है...";
+    callStatus.innerText = "🗣️ Call in progress";
 });
 
 // 5. ICE Candidate को रिसीव करना
@@ -178,7 +177,7 @@ function stopCall() {
     if (localStream) {
         localStream.getTracks().forEach(track => track.stop());
     }
-    callStatus.innerText = "❌ कॉल समाप्त";
+    callStatus.innerText = "❌ Call Ended";
     callBtn.style.display = 'inline-block';
     hangupBtn.style.display = 'none';
     function stopCall() {
@@ -186,7 +185,7 @@ function stopCall() {
     
     // यह लाइन नीचे जोड़ें
     muteBtn.style.display = 'none';
-    muteBtn.innerText = "🎙️ म्यूट करें";
+    muteBtn.innerText = "🎙️ Mute";
     muteBtn.style.background = "#f1c40f";
     isMuted = false;
 }
@@ -205,7 +204,7 @@ messageInput.addEventListener('input', () => {
 // सर्वर से दूसरों का टाइपिंग स्टेटस रिसीव करना
 socket.on('user-typing', (data) => {
     if (data.isTyping) {
-        typingStatus.innerText = `✍️ ${data.username} टाइप कर रहे हैं...`;
+        typingStatus.innerText = `✍️ ${data.username} Typing`;
     } else {
         typingStatus.innerText = ''; // खाली कर दें
     }
@@ -219,14 +218,14 @@ muteBtn.addEventListener('click', () => {
         if (audioTrack) {
             if (!isMuted) {
                 audioTrack.enabled = false; // माइक बंद (Mute)
-                muteBtn.innerText = "🔇 अनम्यूट करें";
-                muteBtn.style.background = "#e74c3c"; // लाल रंग
+                muteBtn.innerText = "🔇 Unmute";
+                muteBtn.style.background = "#299938"; // लाल रंग
                 muteBtn.style.color = "white";
                 isMuted = true;
             } else {
                 audioTrack.enabled = true; // माइक चालू (Unmute)
-                muteBtn.innerText = "🎙️ म्यूट करें";
-                muteBtn.style.background = "#f1c40f"; // पीला रंग
+                muteBtn.innerText = "🎙️ Mute";
+                muteBtn.style.background = "#035880"; // पीला रंग
                 muteBtn.style.color = "#333";
                 isMuted = false;
             }
