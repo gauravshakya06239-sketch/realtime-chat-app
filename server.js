@@ -6,15 +6,15 @@ const io = require('socket.io')(http);
 const PORT = process.env.PORT || 3001;
 
 // static files (HTML, CSS, JS) को serve करने के लिए
-app.use(express.static(__dirname + '/public'));
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 // Socket.io Connection Logic
 io.on('connection', (socket) => {
-    console.log('एक नया यूजर कनेक्ट हुआ: ' + socket.id);
+    console.log('New user connected: ' + socket.id);
 
     // जब कोई यूजर चैट जॉइन करे
     socket.on('new-user-joined', (username) => {
@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
         if(socket.username) {
             socket.broadcast.emit('user-disconnected', socket.username);
         }
-        console.log('यूजर डिस्कनेक्ट हो गया');
+        console.log('Disconnected: ' + socket.id);
     });
     // कॉल ऑफर भेजने के लिए
     socket.on('audio-offer', (data) => {
@@ -70,5 +70,5 @@ io.on('connection', (socket) => {
 });
 
 http.listen(PORT, () => {
-    console.log(`सर्वर http://localhost:${PORT} पर चल रहा है`);
+    console.log(`Server running on  http://localhost:${PORT} `);
 });
