@@ -1,0 +1,141 @@
+.audio-controls {
+    background: #f0f0f0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+.audio-controls button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background: #075e54;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+.audio-controls button:hover {
+    background: #128c7e;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #040250;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.chat-container {
+    width: 100%;
+    max-width: 400px;
+    height: 95vh;
+    background: #010642;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: #075e54;
+    color: rgb(70, 20, 47);
+    padding: 15px;
+    text-align: center;
+}
+
+.message-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #010f25;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.msg {
+    padding: 10px 14px;
+    border-radius: 8px;
+    max-width: 75%;
+    font-size: 15px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.incoming {
+    background: #ffffff;
+    align-self: flex-start;
+    border-top-left-radius: 0;
+}
+
+.outgoing {
+    background: #d9fdd3;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+}
+
+.system-msg {
+    background: rgba(0, 0, 0, 0.05);
+    color: #555;
+    font-size: 13px;
+    align-self: center;
+    text-align: center;
+    border-radius: 5px;
+    padding: 4px 8px;
+}
+
+.username-tag {
+    font-weight: bold;
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 2px;
+    display: block;
+}
+
+.send-container {
+    display: flex;
+    padding: 10px;
+    background: #f0f0f0;
+    gap: 10px;
+}
+
+.send-container input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    font-size: 15px;
+}
+
+.send-container button {
+    background: #075e54;
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.send-container button:hover {
+    background: #128c7e;
+}
+.msg-time {
+    font-size: 10px;
+    color: #666;
+    display: block;
+    text-align: right;
+    margin-top: 4px;
+}
+.outgoing .msg-time {
+    color: #555; /* ग्रीन बैकग्राउंड पर थोड़ा डार्क टाइम */
+}

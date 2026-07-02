@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="English">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Chat Room</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+    <h2>💬Live chat Room</h2>
+    <div id="typingStatus" style="font-size: 12px; color: #d9fdd3; height: 15px; margin-top: 2px;"></div>
+</div>
+        <div class="audio-controls">
+    <button id="callBtn">📞 Call</button>
+    <button id="hangupBtn" style="display:none; background:#d32f2f;">❌ End Call</button>
+    <span id="callStatus" style="margin-left: 10px; font-size: 13px; color: #555;"></span>
+</div>
+<button id="hangupBtn" style="display:none; background:#d32f2f;">❌ End Call</button>
+<button id="muteBtn" style="display:none; background:#f1c40f; color: #333; margin-left: 5px;">🎙️ Mute</button>
+
+<audio id="remoteAudio" autoplay></audio>
+        
+        <div class="message-area" id="messageArea"></div>
+        <form class="send-container" id="sendForm">
+            <input type="text" id="messageInput" placeholder="Typing" autocomplete="off" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+</body>
+</html>
