@@ -53,7 +53,12 @@ function appendMessage(data, type) {
 }
 socket.on('load-old-messages', (messages) => {
     messages.forEach(data => {
-        appendMessage(data, 'incoming');
+        // डेटाबेस से आए यूजरनेम और मैसेज को जोड़कर स्क्रीन पर दिखाना
+        const msgData = {
+            username: data.username,
+            message: `${data.username}: ${data.message}`
+        };
+        appendMessage(msgData, 'incoming');
     });
 });
 socket.on('receive-message', (data) => {
