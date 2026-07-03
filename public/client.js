@@ -51,8 +51,11 @@ function appendMessage(data, type) {
     messageArea.appendChild(msgDiv);
     messageArea.scrollTop = messageArea.scrollHeight; // ऑटो-स्क्रॉल
 }
-
-// सर्वर से दूसरों के मैसेजेस रिसीव करना
+socket.on('load-old-messages', (messages) => {
+    messages.forEach(data => {
+        appendMessage(data, 'incoming');
+    });
+});
 socket.on('receive-message', (data) => {
     // अगर मैसेज किसी और का है, तभी incoming की तरह दिखाओ
     if(data.username !== username) {

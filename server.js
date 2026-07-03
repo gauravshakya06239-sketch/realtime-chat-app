@@ -2,73 +2,63 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
+const mongoose = require('mongoose');
 
 const PORT = process.env.PORT || 3001;
 
-// static files (HTML, CSS, JS) को serve करने के लिए
+const dbURI = 'mongodb+srv://gauravshakya06239_db_user:lr1TUoBdZcgBm3MM@cluster0.brw08bx.mongodb.net/chatApp?retryWrites=true&w=majority&appName=Cluster0';
+mongoose.connect(dbURI)
+    .then(() => console.log('MongoDB connected successfully!'))
+    .catch(err => console.log('Database connection error:', err));
+
+const chatSchema = new mongoose.Schema({
+    username: String,
+    message: String,
+    time: { type: Date, default: Date.now }
+});
+const Chat = mongoose.model('Chat', chatSchema);
+
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// Socket.io Connection Logic
 io.on('connection', (socket) => {
-    console.log('New user connected: ' + socket.id);
+    console.log('A new user connected: ' + socket.id);
 
-    // जब कोई यूजर चैट जॉइन करे
+    Chat.find().sort({ time: -1 }).limit(50)
+        .then(messages => {
+            socket.emit('load-old-messages', messages.reverse());
+        })
+        .catch(err => console.log(err));
+
     socket.on('new-user-joined', (username) => {
         socket.username = username;
-        // बाकी सभी को बताना कि नए यूजर ने जॉइन किया है
         socket.broadcast.emit('user-connected', username);
     });
 
-    // मैसेज रिसीव करने और सबको भेजने के लिए
-    socket.on('send-message', (message) => {
-        io.emit('receive-message', {
-            username: socket.username,
-            message: message
+    socket.on('chat-message', async (data) => {
+        const newMsg = new Chat({
+            username: data.username,
+            message: data.message
         });
+
+        try {
+            await newMsg.save();
+            io.emit('chat-message', data);
+        } catch (err) {
+            console.log('Error saving message:', err);
+        }
     });
 
-    // जब कोई यूजर डिस्कनेक्ट हो
     socket.on('disconnect', () => {
-        if(socket.username) {
+        if (socket.username) {
             socket.broadcast.emit('user-disconnected', socket.username);
         }
-        console.log('Disconnected: ' + socket.id);
-    });
-    // कॉल ऑफर भेजने के लिए
-    socket.on('audio-offer', (data) => {
-        socket.broadcast.emit('audio-offer', {
-            offer: data.offer,
-            sender: socket.username
-        });
-    });
-
-    // कॉल का जवाब (Answer) भेजने के लिए
-    socket.on('audio-answer', (data) => {
-        socket.broadcast.emit('audio-answer', data.answer);
-    });
-
-    // ICE Candidate (नेटवर्क इनफार्मेशन) शेयर करने के लिए
-    socket.on('ice-candidate', (candidate) => {
-        socket.broadcast.emit('ice-candidate', candidate);
-    });
-
-    // कॉल डिस्कनेक्ट करने के लिए
-    socket.on('end-call', () => {
-        socket.broadcast.emit('end-call');
-    });
-    // टाइपिंग स्टेटस रिसीव करना और दूसरों को भेजना
-    socket.on('typing', (data) => {
-        socket.broadcast.emit('user-typing', {
-            username: socket.username,
-            isTyping: data.isTyping
-        });
     });
 });
 
 http.listen(PORT, () => {
-    console.log(`Server running on  http://localhost:${PORT} `);
+    console.log(`Server is running on port ${PORT}...`);
 });
