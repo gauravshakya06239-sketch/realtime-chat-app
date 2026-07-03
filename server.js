@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 const PORT = process.env.PORT || 3001;
 
-const dbURI = 'mongodb+srv://gauravshakya06239_db_user:lr1TUoBdZcgBm3MM@cluster0.brw08bx.mongodb.net/chatApp?retryWrites=true&w=majority&appName=Cluster0';
+const dbURI = process.env.MONGO_URI;
 mongoose.connect(dbURI)
     .then(() => console.log('MongoDB connected successfully!'))
     .catch(err => console.log('Database connection error:', err));
